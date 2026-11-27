@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+<meta name="theme-color" content="#12303a" />
+<meta name="description" content="Count War - a standalone 3D crowd-count arcade game. Steer your swarm, split through number gates, capture watchtowers and break the boss line." />
+<title>Count War</title>
+<link rel="stylesheet" href="./css/game.css" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23f59e0b'/><text x='16' y='23' font-size='18' text-anchor='middle' font-family='sans-serif' fill='%23132'>CW</text></svg>" />
+</head>
+<body>
+<div id="app" class="app">
+  <canvas id="scene" aria-label="Count War game view"></canvas>
+
+  <!-- world-anchored numbers / captions -->
+  <div id="labels" class="labels" aria-hidden="true"></div>
+
+  <!-- in-game hud -->
+  <div id="hud" class="hud is-hidden">
+    <div class="hud-top">
+      <div class="hud-chip" id="hud-count">
+        <span class="hud-chip-key" data-i18n="hud.count">Crowd</span>
+        <b id="hud-count-value">0</b>
+      </div>
+      <div class="hud-chip" id="hud-level">
+        <span class="hud-chip-key" data-i18n="hud.level">Level</span>
+        <b id="hud-level-value">1</b>
+      </div>
+      <div class="hud-progress"><i id="hud-progress-bar"></i></div>
+      <button class="icon-btn" id="btn-pause" type="button" aria-label="Pause">II</button>
+    </div>
+    <div class="hud-bottom">
+      <div class="hud-hint" id="hud-hint" data-i18n="hint.drag">Drag to steer your crowd</div>
+    </div>
+  </div>
+
+  <!-- loading -->
+  <section id="screen-loading" class="screen screen-loading">
+    <div class="loader-title" id="loading-logo">COUNT WAR</div>
+    <div class="loader-bar"><i id="loading-bar"></i></div>
+    <div class="loader-note" id="loading-note" data-i18n="loading">Loading</div>
+  </section>
+
+  <!-- main menu -->
+  <section id="screen-menu" class="screen screen-menu is-hidden">
+    <div class="menu-hero"></div>
+    <div class="menu-panel">
+      <img class="menu-logo" id="menu-logo-img" alt="Count War" />
+      <h1 class="menu-heading" data-i18n="menu.title">Count War</h1>
+      <p class="menu-sub" data-i18n="menu.sub">Grow the swarm. Break the gate.</p>
+      <button class="btn btn-primary" id="btn-play" type="button"><span data-i18n="menu.play">Play</span></button>
+      <div class="menu-row">
+        <button class="btn btn-ghost" id="btn-levels" type="button"><span data-i18n="menu.levels">Levels</span></button>
+        <button class="btn btn-ghost" id="btn-sound" type="button"><span data-i18n="menu.sound">Sound: On</span></button>
+      </div>
+      <div class="menu-levels" id="level-list"></div>
+      <div class="menu-best" id="menu-best"></div>
+      <p class="menu-foot" data-i18n="menu.foot">Single player · works offline once loaded</p>
+    </div>
+    <div class="ad-slot ad-slot-menu" id="ad-menu" data-ad-slot="menuBanner" hidden></div>
+  </section>
+
+  <!-- pause -->
+  <section id="screen-pause" class="screen screen-modal is-hidden">
+    <div class="modal">
+      <h2 data-i18n="pause.title">Paused</h2>
+      <button class="btn btn-primary" id="btn-resume" type="button"><span data-i18n="pause.resume">Resume</span></button>
+      <button class="btn btn-ghost" id="btn-retry" type="button"><span data-i18n="pause.retry">Restart level</span></button>
+      <button class="btn btn-ghost" id="btn-menu" type="button"><span data-i18n="pause.menu">Main menu</span></button>
+    </div>
+  </section>
+
+  <!-- result -->
+  <section id="screen-result" class="screen screen-modal is-hidden">
+    <div class="modal">
+      <h2 id="result-title" data-i18n="result.win">Track cleared!</h2>
+      <p id="result-detail" class="modal-sub"></p>
+      <div class="modal-actions">
+        <button class="btn btn-primary" id="btn-next" type="button"><span data-i18n="result.next">Next level</span></button>
+        <button class="btn btn-ghost" id="btn-revive" type="button" hidden><span data-i18n="result.revive">Continue</span></button>
+        <button class="btn btn-ghost" id="btn-again" type="button"><span data-i18n="result.retry">Try again</span></button>
+        <button class="btn btn-ghost" id="btn-result-menu" type="button"><span data-i18n="pause.menu">Main menu</span></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ads -->
+  <div class="ad-slot ad-slot-play" id="ad-play" data-ad-slot="playBanner" hidden></div>
+  <div class="ad-slot ad-slot-interstitial" id="ad-interstitial" data-ad-slot="betweenLevels" hidden>
+    <div class="ad-frame"></div>
+  </div>
+
+  <!-- host lock notice -->
+  <section id="screen-host" class="screen screen-host is-hidden">
+    <div class="host-card">
+      <div class="host-spinner"></div>
+      <h2 data-i18n="host.title">Opening the official page</h2>
+      <p class="host-note" data-i18n="host.note">This build is licensed for pipygames.com. Taking you there in a moment…</p>
+      <p class="host-dest"><span data-i18n="host.dest">Destination</span>: <code id="host-dest-url"></code></p>
+    </div>
+  </section>
+
+  <!-- fatal -->
+  <section id="screen-error" class="screen screen-error is-hidden">
+    <div class="host-card">
+      <h2 data-i18n="error.title">Could not start</h2>
+      <p class="host-note" id="error-detail"></p>
+      <button class="btn btn-ghost" id="btn-reload" type="button"><span data-i18n="error.reload">Reload</span></button>
+    </div>
+  </section>
+</div>
+
+<script>
+  /* Virtual file table used by the single-file build (tools/build-web.js). Empty here. */
+  window.__CW_FILES__ = window.__CW_FILES__ || {};
+</script>
+<script type="module" src="./src/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,211 @@
+{
+  "$comment": "All gameplay / publishing knobs live here. Edit this file only, no code change needed.",
+
+  "meta": {
+    "name": "Count War",
+    "version": "1.0.0",
+    "author": "pipygames",
+    "singlePlayer": true
+  },
+
+  "language": {
+    "$comment": "Language is chosen ONLY by url ?lang=en|zh (or ?locale=). There is no in-game switch button.",
+    "default": "en",
+    "supported": ["en", "zh"],
+    "urlParams": ["lang", "locale"],
+    "showSwitchButton": false,
+    "fallBackToBrowser": false
+  },
+
+  "hosting": {
+    "$comment": "Domain lock. Unknown host => full game still loads, waits redirectDelayMs, then sends the visitor to redirectUrl.",
+    "enforce": true,
+    "allowedHosts": ["localhost", "127.0.0.1", "0.0.0.0", "::1", "pipygames.com", "*.pipygames.com"],
+    "allowLocalFiles": true,
+    "unauthorizedAction": "redirect",
+    "redirectUrl": "https://pipygames.com/",
+    "redirectDelayMs": 3000,
+    "showNoticeWhileWaiting": true,
+    "blockGameplayUntilRedirect": true,
+    "bypassUrlParam": "hostcheck",
+    "$bypassDoc": "append ?hostcheck=off while debugging to skip the lock"
+  },
+
+  "ads": {
+    "$comment": "Pre-wired ad slots. Nothing loads until you set enabled=true and paste your client / slot ids.",
+    "enabled": false,
+    "provider": "none",
+    "$providerDoc": "none | google-adsense | poki | crazygames | gamemonetize",
+    "testMode": true,
+    "google": {
+      "clientId": "",
+      "loaderUrl": "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js",
+      "adsbygooglePush": true,
+      "slots": {
+        "menuBanner": "",
+        "playBanner": "",
+        "betweenLevels": "",
+        "revive": "",
+        "hint": ""
+      },
+      "formatOverrides": {
+        "menuBanner": "rectangle",
+        "playBanner": "horizontal",
+        "betweenLevels": "vertical"
+      }
+    },
+    "portals": {
+      "poki": { "enabled": false, "businessUnitId": "" },
+      "crazygames": { "enabled": false, "sdkUrl": "", "$sdkUrlDoc": "paste the CrazyGames SDK script url here when you have a portal account" },
+      "gamemonetize": { "enabled": false, "appId": "", "eventUrl": "https://api.gamemonetize.com/adb.php" }
+    },
+    "behavior": {
+      "loadOnBoot": false,
+      "bannerDuringGameplay": false,
+      "interstitialOnLevelComplete": true,
+      "interstitialOnGameOver": false,
+      "interstitialEveryLevels": 2,
+      "minSecondsBetweenInterstitials": 75,
+      "rewardedForRevive": true,
+      "rewardedForBonusStart": false,
+      "pauseMusicDuringAds": true,
+      "muteAudioDuringAds": false
+    },
+    "containers": {
+      "menuBanner": "#ad-menu",
+      "playBanner": "#ad-play",
+      "betweenLevels": "#ad-interstitial"
+    }
+  },
+
+  "audio": {
+    "master": 0.9,
+    "music": 0.45,
+    "sfx": 0.85,
+    "startMuted": false,
+    "urlParam": "sound",
+    "maxSimultaneous": 12,
+    "crowdDenoise": true,
+    "sounds": {
+      "uiClick": "assets/sfx/ui_click.wav",
+      "uiBack": "assets/sfx/ui_back.wav",
+      "levelStart": "assets/sfx/level_start.wav",
+      "gateGood": "assets/sfx/gate_good.wav",
+      "gateBad": "assets/sfx/gate_bad.wav",
+      "gateMultiply": "assets/sfx/gate_multiply.wav",
+      "absorb": "assets/sfx/absorb.wav",
+      "loseUnits": "assets/sfx/lose_units.wav",
+      "towerShot": "assets/sfx/tower_shot.wav",
+      "towerHit": "assets/sfx/tower_hit.wav",
+      "towerCapture": "assets/sfx/tower_capture.wav",
+      "unitHit": "assets/sfx/unit_hit.wav",
+      "bossRoar": "assets/sfx/boss_roar.wav",
+      "bossHit": "assets/sfx/boss_hit.wav",
+      "win": "assets/sfx/win.wav",
+      "lose": "assets/sfx/lose.wav",
+      "crowdMurmur": "assets/sfx/crowd_murmur.wav",
+      "musicMenu": "assets/sfx/music_menu.wav",
+      "musicPlay": "assets/sfx/music_play.wav",
+      "monsterRoar": "assets/sfx/monster_roar.wav",
+      "monsterHit": "assets/sfx/monster_hit.wav",
+      "monsterDie": "assets/sfx/monster_die.wav"
+    }
+  },
+
+  "assets": {
+    "logo": "assets/img/ui/logo.png",
+    "menuHero": "assets/img/menu/menu-hero.png",
+    "faces": "assets/img/tex/creature-face.png",
+    "sky": ["assets/img/sky/sky-forest.png", "assets/img/sky/sky-dusk.png"],
+    "ground": ["assets/img/tex/ground-grass.png", "assets/img/tex/ground-sand.png", "assets/img/tex/ground-stone.png"]
+  },
+
+  "gameplay": {
+    "startCount": 6,
+    "maxCount": 900,
+    "sim": {
+      "maxInstances": 900,
+      "unitRadius": 0.34,
+      "spacing": 0.62,
+      "cohesion": 6.2,
+      "separation": 10.5,
+      "alignment": 2.4,
+      "driveForce": 7.8,
+      "steerSmooth": 9.0,
+      "maxSpeed": 9.0,
+      "neighborCell": 1.1,
+      "bobbing": 1.0,
+      "jitter": 0.16
+    },
+    "camera": {
+      "fov": 52,
+      "height": 15.5,
+      "back": 12.0,
+      "lookAhead": 6.5,
+      "followLerp": 6.5,
+      "shakeOnHit": 0.35
+    },
+    "player": {
+      "forwardSpeed": 6.8,
+      "laneSpeed": 13.5,
+      "halfWidth": 6.2,
+      "checkpointHeal": 0
+    },
+    "gates": {
+      "spawnGap": 22,
+      "addRange": [8, 26],
+      "subRange": [4, 18],
+      "multiplyChance": 0.18,
+      "multiplyValues": [2, 3],
+      "divideChance": 0.1
+    },
+    "neutrals": {
+      "spawnChance": 0.75,
+      "countRange": [4, 40],
+      "rewardRatio": 1.0
+    },
+    "towers": {
+      "count": 7,
+      "hp": 55,
+      "range": 30,
+      "damagePerUnitPerSecond": 0.7,
+      "fireInterval": [0.7, 1.4],
+      "projectileSpeed": 14,
+      "captureReward": 8,
+      "upgradePerLevel": 6
+    },
+    "boss": {
+      "hp": 320,
+      "damage": 12,
+      "dpsPerUnit": 0.5,
+      "attackInterval": 1.3,
+      "sweepWidth": 7.0
+    },
+    "monsters": {
+      "$comment": "大怪：中途强敌，迎向玩家、按人数掉血、周期横扫扣人，击溃给奖励人数。tier 越高越强（每关 +1，上限 3）。攻击带 windup 前摇，落点瞄准人群（aimX，地面显示 ⚠），横向移开即可躲避。",
+      "hp": 100,
+      "damage": 6,
+      "dpsPerUnit": 0.8,
+      "attackInterval": 1.8,
+      "windup": 0.75,
+      "sweepWidth": 6.0,
+      "reward": 40
+    },
+    "levels": [
+      { "id": 1, "name": "Meadow Sprint", "theme": "grass", "length": 260, "gates": 9, "neutrals": 6, "towers": 3, "boss": false, "monsters": 0, "difficulty": 1 },
+      { "id": 2, "name": "Sand Gate Run", "theme": "sand", "length": 320, "gates": 12, "neutrals": 8, "towers": 4, "boss": false, "monsters": 1, "difficulty": 1.25 },
+      { "id": 3, "name": "Stone Keep", "theme": "stone", "length": 380, "gates": 14, "neutrals": 9, "towers": 6, "boss": true, "monsters": 1, "difficulty": 1.5 },
+      { "id": 4, "name": "Dusk Fortress", "theme": "dusk", "length": 440, "gates": 16, "neutrals": 11, "towers": 7, "boss": true, "monsters": 2, "difficulty": 1.8 },
+      { "id": 5, "name": "Night Colossus", "theme": "dusk", "length": 520, "gates": 18, "neutrals": 13, "towers": 8, "boss": true, "monsters": 2, "difficulty": 2.2 },
+      { "id": 6, "name": "Frost Pass", "theme": "ice", "length": 360, "gates": 14, "neutrals": 10, "towers": 6, "boss": false, "monsters": 2, "difficulty": 1.6 },
+      { "id": 7, "name": "Glacier Gate", "theme": "ice", "length": 460, "gates": 16, "neutrals": 12, "towers": 8, "boss": true, "monsters": 2, "difficulty": 1.7 },
+      { "id": 8, "name": "Ember Waste", "theme": "sand", "length": 500, "gates": 17, "neutrals": 12, "towers": 9, "boss": true, "monsters": 3, "difficulty": 1.8 },
+      { "id": 9, "name": "Crystal Hollow", "theme": "stone", "length": 540, "gates": 18, "neutrals": 13, "towers": 9, "boss": true, "monsters": 3, "difficulty": 1.9 },
+      { "id": 10, "name": "Midnight Ridge", "theme": "dusk", "length": 580, "gates": 19, "neutrals": 14, "towers": 10, "boss": true, "monsters": 3, "difficulty": 2.0 },
+      { "id": 11, "name": "Frozen Citadel", "theme": "ice", "length": 620, "gates": 20, "neutrals": 15, "towers": 11, "boss": true, "monsters": 3, "difficulty": 2.1 },
+      { "id": 12, "name": "Aurora Gate", "theme": "ice", "length": 700, "gates": 22, "neutrals": 16, "towers": 12, "boss": true, "monsters": 3, "difficulty": 2.3 }
+    ],
+    "progression": { "startCountBonusPerLevel": 2, "gateScalePerLevel": 1.12, "neutralScalePerLevel": 1.15 },
+    "persistence": { "localStorageKey": "count-war.progress", "rememberHighestLevel": true, "rememberBestCount": true }
+  }
+}
